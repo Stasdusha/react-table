@@ -10,7 +10,13 @@ export class СhangeableTh extends Component {
     this.state = { active: false, value: children };
   }
 
-  static propTypes = {};
+  static propTypes = {
+    changeItem: PropTypes.func.isRequired,
+    removeItem: PropTypes.func.isRequired,
+    hover: PropTypes.bool.isRequired,
+    last: PropTypes.bool.isRequired,
+    children: PropTypes.string
+  };
 
   onChange = ({ target: { value } }) => {
     this.setState({ value });

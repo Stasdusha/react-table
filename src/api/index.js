@@ -10,7 +10,8 @@ const createFakePromis = (data, time = 1000) =>
 const get = () => createFakePromis(data);
 
 const post = () => {
-  data = [...data, { id: (data.length + 1).toString() }];
+  const newId = (Number.parseInt(data[data.length - 1].id, 10) + 1).toString();
+  data = [...data, { id: newId }];
   return createFakePromis(data);
 };
 

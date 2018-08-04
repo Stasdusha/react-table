@@ -6,6 +6,13 @@ import InputTh from './СhangeableTh';
 export class TableRow extends Component {
   state = { hover: false };
 
+  static propTypes = {
+    rowData: PropTypes.object.isRequired,
+    columns: PropTypes.array.isRequired,
+    removeItem: PropTypes.func.isRequired,
+    changeItem: PropTypes.func.isRequired
+  };
+
   onMouseEnter = () => this.setState({ hover: true });
 
   onMouseLeave = () => this.setState({ hover: false });

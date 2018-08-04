@@ -13,7 +13,19 @@ import {
 } from './Table.styled';
 
 export class Table extends Component {
-  static propTypes = {};
+  static propTypes = {
+    data: PropTypes.array.isRequired,
+    columns: PropTypes.arrayOf(
+      PropTypes.shape({
+        title: PropTypes.string.isRequired,
+        key: PropTypes.string.isRequired
+      })
+    ),
+    addNewItem: PropTypes.func.isRequired,
+    removeItem: PropTypes.func.isRequired,
+    changeItem: PropTypes.func.isRequired,
+    isLoading: PropTypes.bool.isRequired
+  };
 
   render() {
     const {
