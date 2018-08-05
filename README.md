@@ -1,10 +1,7 @@
 React component Table example
 
-install packages
-yarn
+install packages - yarn
 
-start app
-yarn start
+start app - yarn start
 
-test
-yarn test
+test - yarn test
