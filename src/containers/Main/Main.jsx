@@ -4,51 +4,51 @@ import api from '../../api';
 import { Container, Title } from './Main.styled';
 
 class Main extends Component {
-  state = { isLoading: false };
-  componentWillMount() {
-    const { getDataAction } = this.props;
-    this.toggleLoading();
-    api
-      .get()
-      .then(getDataAction)
-      .then(this.toggleLoading);
+  constructor(props) {
+    super(props);
+    this.addNewItem = this.addNewItem.bind(this);
+    this.removeItem = this.removeItem.bind(this);
+    this.changeItem = this.changeItem.bind(this);
   }
 
-  toggleLoading = () => {
-    const { isLoading } = this.state;
-    this.setState({ isLoading: !isLoading });
-  };
+  async componentWillMount() {
+    const { getDataAction, getDataErrorAction } = this.props;
+    try {
+      getDataAction(await api.get());
+    } catch (error) {
+      getDataErrorAction(error);
+    }
+  }
 
-  addNewItem = () => {
-    this.toggleLoading();
-    const { addNewItemAction } = this.props;
-    api
-      .post()
-      .then(addNewItemAction)
-      .then(this.toggleLoading);
-  };
+  async addNewItem() {
+    const { addNewItemAction, addNewItemErrorAction } = this.props;
+    try {
+      addNewItemAction(await api.post());
+    } catch (error) {
+      addNewItemErrorAction(error);
+    }
+  }
 
-  removeItem = id => {
-    const { removeItemAction } = this.props;
-    this.toggleLoading();
-    api
-      .delete(id)
-      .then(removeItemAction)
-      .then(this.toggleLoading);
-  };
+  async removeItem(id) {
+    const { removeItemAction, removeItemErrorAction } = this.props;
+    try {
+      removeItemAction(await api.delete(id));
+    } catch (error) {
+      removeItemErrorAction(error);
+    }
+  }
 
-  changeItem = (id, key, value) => {
-    const { changeItemAction } = this.props;
-    this.toggleLoading();
-    api
-      .put(id, key, value)
-      .then(changeItemAction)
-      .then(this.toggleLoading);
-  };
+  async changeItem(id, key, value) {
+    const { changeItemAction, changeItemErrorAction } = this.props;
+    try {
+      changeItemAction(await api.put(id, key, value));
+    } catch (error) {
+      changeItemErrorAction(error);
+    }
+  }
 
   render() {
     const { data } = this.props;
-    const { isLoading } = this.state;
     const columns = [
       { title: 'Name', key: 'name' },
       { title: 'Gender', key: 'gender' },
@@ -60,11 +60,10 @@ class Main extends Component {
         <Title>Example data-table</Title>
         <Table
           data={data}
-          removeItem={this.removeItem}
-          addNewItem={this.addNewItem}
-          changeItem={this.changeItem}
+          removeItemCallback={this.removeItem}
+          addNewItemCallback={this.addNewItem}
+          changeItemCallback={this.changeItem}
           columns={columns}
-          isLoading={isLoading}
         />
       </Container>
     );

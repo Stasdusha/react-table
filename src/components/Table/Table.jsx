@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import TableRow from './TableRow';
+import TableRow from '../TableRow';
 import {
   Container,
   TableContainer,
@@ -8,11 +8,25 @@ import {
   TableBody,
   Tr,
   Th,
-  AddButton,
-  Spinner
+  AddButton
 } from './Table.styled';
 
 export class Table extends Component {
+  state = {};
+  static getDerivedStateFromProps(props, state) {
+    const { data } = props;
+    if (state && state.data === data) {
+      return state;
+    }
+    return { localData: [...data], data: data };
+  }
+
+  static defaultProps = {
+    addNewItemCallback: () => {},
+    removeItemCallback: () => {},
+    changeItemCallback: () => {}
+  };
+
   static propTypes = {
     data: PropTypes.array.isRequired,
     columns: PropTypes.arrayOf(
@@ -21,24 +35,48 @@ export class Table extends Component {
         key: PropTypes.string.isRequired
       })
     ),
-    addNewItem: PropTypes.func.isRequired,
-    removeItem: PropTypes.func.isRequired,
-    changeItem: PropTypes.func.isRequired,
-    isLoading: PropTypes.bool.isRequired
+    addNewItemCallback: PropTypes.func,
+    removeItemCallback: PropTypes.func,
+    changeItemCallback: PropTypes.func
+  };
+
+  addNewItem = () => {
+    const { addNewItemCallback } = this.props;
+    this.setState(({ localData }) => ({
+      localData: [...localData, { id: 'temp' }]
+    }));
+    addNewItemCallback();
+  };
+
+  removeItem = id => {
+    const { removeItemCallback } = this.props;
+    this.setState(({ localData }) => ({
+      localData: localData.filter(item => item.id !== id)
+    }));
+    removeItemCallback(id);
+  };
+
+  changeItem = (id, key, value) => {
+    const { changeItemCallback } = this.props;
+    const { localData } = this.state;
+    const index = localData.findIndex(item => item.id === id);
+    const newItem = { ...localData[index], [key]: value };
+    this.setState(() => ({
+      localData: [
+        ...localData.slice(0, index),
+        newItem,
+        ...localData.slice(index + 1)
+      ]
+    }));
+    changeItemCallback(id, key, value);
   };
 
   render() {
-    const {
-      data,
-      columns,
-      addNewItem,
-      removeItem,
-      changeItem,
-      isLoading
-    } = this.props;
+    const { columns } = this.props;
+    const { localData } = this.state;
 
     return (
-      <Container isLoading={isLoading}>
+      <Container>
         <TableContainer>
           <TableHeader>
             <Tr>
@@ -48,10 +86,10 @@ export class Table extends Component {
             </Tr>
           </TableHeader>
           <TableBody>
-            {data.map(rowData => (
+            {localData.map(rowData => (
               <TableRow
-                removeItem={removeItem}
-                changeItem={changeItem}
+                removeItem={this.removeItem}
+                changeItem={this.changeItem}
                 key={rowData.id}
                 rowData={rowData}
                 columns={columns}
@@ -59,8 +97,7 @@ export class Table extends Component {
             ))}
           </TableBody>
         </TableContainer>
-        <AddButton onClick={addNewItem}>Add new row +</AddButton>
-        {isLoading && <Spinner />}
+        <AddButton onClick={this.addNewItem}>Add new row +</AddButton>
       </Container>
     );
   }

@@ -1,13 +1,13 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import enhanceWithClickOutside from 'react-click-outside';
-import { Input, Th, Value, RemoveButton } from './СhangeableTh.styled';
+import { Input, Th, Value, RemoveButton } from './InputTh.styled';
 
-export class СhangeableTh extends Component {
+export class InputTh extends Component {
   constructor(props) {
     const { children } = props;
     super(props);
-    this.state = { active: false, value: children };
+    this.state = { active: false, value: children || '' };
   }
 
   static propTypes = {
@@ -68,4 +68,4 @@ export class СhangeableTh extends Component {
   }
 }
 
-export default enhanceWithClickOutside(СhangeableTh);
+export default enhanceWithClickOutside(InputTh);

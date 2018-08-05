@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { Tr } from './TableRow.styled';
-import InputTh from './СhangeableTh';
+import InputTh from '../InputTh';
 
 export class TableRow extends Component {
   state = { hover: false };
