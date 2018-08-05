@@ -25,7 +25,7 @@ export default (state = initialState, { type, payload }) => {
     case ADD_NEW_ITEM_ERROR:
     case REMOVE_ITEM_ERROR:
     case CHANGE_ITEM_ERROR:
-      return { ...state, error: payload.error };
+      return { ...state, error: payload.error, data: [...state.data] };
     default:
       return state;
   }
